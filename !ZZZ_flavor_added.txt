@@ -1,0 +1,450 @@
+######################
+#CUSTOM FLAVOR EVENTS#
+######################
+
+
+
+
+######################
+#turkish revolt event#
+#     By Valid	     #
+######################
+
+#spawn rebels
+
+country_event = {
+    id = BA.TUR.flavor.anatolia.1
+    title = BA.TUR.flavor.anatolia.1.T
+    desc = BA.TUR.flavor.anatolia.1.D
+    major = yes
+    picture = ANGRY_MOB_eventPicture
+    trigger = { 
+        is_year = 1454 
+        NOT = { exists = TUR }
+    }
+    option = {
+        name = BA.TUR.flavor.anatolia.1.OPT1
+        anatolia_region = {
+            limit = {
+                   OR = {
+                    religion = catholic
+                    religion = orthodox
+                   }
+                culture = turkish
+            }
+               spawn_rebels = {
+                type = nationalist_rebels
+                size = 3
+                friend = TUR
+            }
+           }
+    }
+}
+# Independence
+
+country_event = {
+	id = BA.TUR.flavor.anatolia.2
+	title = BA.TUR.flavor.anatolia.2.T
+	desc = BA.TUR.flavor.anatolia.2.D
+	picture = ANGRY_MOB_eventPicture
+	major = yes
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+		NOT = { exists = TUR }
+		is_free_or_tributary_trigger = yes
+		num_of_owned_provinces_with = {
+			value = 5
+			OR = {
+				controlled_by = REB
+				local_autonomy = 90
+			}
+			OR = {
+				culture = turkish
+
+			}
+		}
+	}
+	option = {
+		name = BA.TUR.flavor.anatolia.2.OPT1
+		immediate = {
+			hidden_effect = {
+				every_owned_province = {
+					limit = {
+							culture = turkish
+							is_core = TUR
+					
+						is_capital = no
+					}
+					discover_country = TUR
+					add_core = TUR
+					clear_rebels = yes
+				}
+					release = TUR
+				TUR = {
+					change_government = republic
+					add_government_reform = military_dictatorship # maybe peasants_republic instead???
+					
+				}
+				every_owned_province = {
+					limit = {
+						region = anatolia_region
+					}
+					add_claim = TUR
+				}
+			}
+		}
+	}
+}
+
+#rebels defeated
+
+country_event = {
+	id = BA.TUR.flavor.anatolia.3
+	title = BA.TUR.flavor.anatolia.3.T
+	desc = BA.TUR.flavor.anatolia.3.D
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+
+	major = yes
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger =  { num_of_rebel_armies = 0 }
+	option = { 
+		name = BA.TUR.flavor.anatolia.3.OPT1
+			add_mil_power = 5
+			add_stability = 1
+		country_event = {
+			id = TUR.flavor.anatolia.4
+			days = 15
+			random = 15
+		}
+	}
+}
+
+#what to do with turks
+
+country_event = {
+	id = BA.TUR.flavor.anatolia.4
+	title = BA.TUR.flavor.anatolia.4.T
+	desc = BA.TUR.flavor.anatolia.4.D
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+
+	major = yes 
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = { country_event = BA.TUR.flavor.anatolia.3 }
+	option = {
+		name = BA.TUR.flavor.anatolia.4.OPT1
+		every_owned_province = { 
+			limit = {
+				culture = turkish
+			}
+			change_culture = anatolian
+			add_devastation = 50
+			add_stability = 1
+		}
+	}
+	option = {
+		name = BA.TUR.flavor.anatolia.4.OPT2
+		add_accepted_culture = turkish
+		add_stability = -3
+
+	}
+	option = {
+		name = BA.TUR.flavor.anatolia.4.OPT3
+		every_owned_province = {
+			limit = {
+				culture = turkish
+			}
+			add_base_tax = -3
+			add_base_production = -3
+			add_base_manpower = -3
+			change_culture = anatolian
+			every_province = {
+				limit = {
+					culture = pahari
+				}
+				change_culture = turkish
+				add_base_tax = 5
+				add_base_production = 3
+				add_base_manpower = 4
+			}
+
+		}
+	}
+	option = {
+		name = BA.TUR.flavor.anatolia.4.OPT4
+		create_vassal = TUR
+		add_stability = -1
+	}
+}
+
+
+####################################################
+## Made by GrumpyKing for Byzantium Antiquity Mod ##
+####################################################
+namespace = BA_Bosnia_Event
+
+#Hidden event to set the ruler flag#
+country_event = {
+	id = BA_Bosnia_Event.1
+	title = "BA_Bosnia_Event.1.T"
+	desc = "BA_Bosnia_Event.1.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+	hidden = yes
+    fire_only_yes = yes
+	trigger = { tag = BYZ }
+    option = {
+        name = BA_Bosnia_Event.1.OPT1
+		set_ruler_flag = BA_first_byz_ruler
+	}
+}
+
+#Event Regarding the start of the War#
+country_event = {
+	id = BA_Bosnia_Event.2
+	title = "BA_Bosnia_Event.2.T"
+	desc = "BA_Bosnia_Event.2.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    fire_only_yes = yes
+	trigger = {
+		tag = BOS
+		BYZ = {
+			NOT = { has_ruler_flag = BA_first_byz_ruler }
+		}
+	}
+    option = {
+        name = BA_Bosnia_Event.2.OPT1
+		declare_war_with_cb = {
+			who = BYZ
+			casus_belli = cb_restore_personal_union
+		}
+		country_event = { 
+			id = BA_Bosnia_Event.3 
+		}
+		country_event = { 
+			id = BA_Bosnia_Event.5
+			days = 40
+		}
+		BYZ = {
+			country_event = { 
+				id = BA_Bosnia_Event.4
+				days = 20
+			}
+		}
+	}
+	option = {
+		name = BA_Bosnia_Event.2.OPT2
+		add_prestige = -25
+	}
+}
+
+#Event to inform Byzantium about the war#
+country_event = {
+	id = BA_Bosnia_Event.3
+	title = "BA_Bosnia_Event.3.T"
+	desc = "BA_Bosnia_Event.3.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    is_triggered_only = yes
+    option = {
+        name = BA_Bosnia_Event.3.OPT1
+		add_mil_power = 75
+	}
+}
+
+#Event regarding spawning rebels#
+country_event = {
+	id = BA_Bosnia_Event.4
+	title = "BA_Bosnia_Event.4.T"
+	desc = "BA_Bosnia_Event.4.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    is_triggered_only = yes
+    option = {
+        name = BA_Bosnia_Event.4.OPT1
+		4750 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 4
+				friend = BOS
+			}
+		}		
+	}
+}
+
+#Event regarding petition to join#
+country_event = {
+	id = BA_Bosnia_Event.5
+	title = "BA_Bosnia_Event.5.T"
+	desc = "BA_Bosnia_Event.5.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    is_triggered_only = yes
+    option = {
+        name = BA_Bosnia_Event.5.OPT1
+		SER = {
+			country_event = { 
+				id = BA_Bosnia_Event.6
+			}
+		}
+		set_country_flag = BA_bosnia_chose_serbia
+	}
+	option = {
+        name = BA_Bosnia_Event.5.OPT2
+		VEN = {
+			country_event = { 
+				id = BA_Bosnia_Event.6
+			}
+		}
+		set_country_flag = BA_bosnia_chose_venice
+	}
+	option = {
+        name = BA_Bosnia_Event.5.OPT2
+		add_prestige = 5
+	}
+	option = {
+		name = BA_Bosnia_Event.5.OPT3
+		add_prestige = 50
+		add_mil_power = 250
+		add_manpower = 5
+	}
+}
+
+
+#2nd Event regarding petition to join#
+country_event = {
+	id = BA_Bosnia_Event.6
+	title = "BA_Bosnia_Event.6.T"
+	desc = "BA_Bosnia_Event.6.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    is_triggered_only = yes
+    option = {
+        name = BA_Bosnia_Event.6.OPT1
+		ai_chance = {
+			factor = 75
+			modifier = {
+				factor = 0
+				is_at_war = yes
+			}
+		}
+		join_all_offensive_wars_of = BOS
+	}
+	option = {
+		name = BA_Bosnia_Event.6.OPT2
+		add_prestige = 5
+	}
+}
+
+#1st Event regarding giving the land#
+country_event = {
+	id = BA_Bosnia_Event.7
+	title = "BA_Bosnia_Event.7.T"
+	desc = "BA_Bosnia_Event.7.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    trigger = {
+		has_country_flag = BA_bosnia_chose_serbia
+		has_won_war_against = {
+			who = BYZ
+			max_years_since = 1
+		}
+	}
+    option = {
+        name = BA_Bosnia_Event.7.OPT1
+		3001 = {
+			cede_province = SER
+			remove_core = BYZ
+		}
+		4780 = {
+			cede_province = SER
+			remove_core = BYZ
+		}
+		clr_country_flag = BA_bosnia_chose_serbia
+	}
+	option = {
+		name = BA_Bosnia_Event.7.OPT2
+		SER = {
+			revers_add_opinion = {
+				who = ROOT
+				modifier = BA_dishonored_petition
+			}
+		}
+	}
+}
+
+#2nd Event regarding giving the land#
+country_event = {
+	id = BA_Bosnia_Event.8
+	title = "BA_Bosnia_Event.8.T"
+	desc = "BA_Bosnia_Event.8.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    trigger = {
+		has_country_flag = BA_bosnia_chose_venice
+		has_won_war_against = {
+			who = BYZ
+			max_years_since = 1
+		}
+	}
+    option = {
+        name = BA_Bosnia_Event.8.OPT1
+		1848 = {
+			cede_province = SER
+			remove_core = BYZ
+		}
+		2298 = {
+			cede_province = SER
+			remove_core = BYZ
+		}
+		clr_country_flag = BA_bosnia_chose_venice
+	}
+	option = {
+		name = BA_Bosnia_Event.8.OPT2
+		VEN = {
+			revers_add_opinion = {
+				who = ROOT
+				modifier = BA_dishonored_petition
+			}
+		}
+	}
+}
+####################################################
+## Made by GrumpyKing for Byzantium Antiquity Mod ##
+####################################################
+namespace = BA_Knights_Event
+
+#Event Regarding Knights Colonization#
+country_event = {
+	id = BA_Knights_Event.1
+	title = "BA_Knights_Event.1.T"
+	desc = "BA_Knights_Event.1.D"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+    fire_only_yes = yes
+	trigger = { 
+		tag = KNI
+		any_country = {
+			capital_scope = { continent = europe }
+			OR = {
+				north_america = {
+					has_discovered = PREV
+				}
+				south_america = {
+					has_discovered = PREV
+				}
+			}
+		}
+	}
+    option = {
+        name = BA_Knights_Event.1.OPT1
+		add_country_modifier = {
+			name = BA_KNI_new_crusade
+			duration = -1
+		}
+	}
+	option = {
+		name = BA_Knights_Event.1.OPT2
+		add_casus_belli = {
+			target = GUJ
+			type = cb_crusade
+		}
+	}
+}
